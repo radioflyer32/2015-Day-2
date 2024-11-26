@@ -12,8 +12,17 @@ A present with dimensions 1x1x10 requires 2*1 + 2*10 + 2*10 = 42 square feet of 
 All numbers in the elves' list are in feet. How many total square feet of wrapping paper should they order?
 */
 
+/*
+* Outline of process that needs to happen...
+* Text is stored in a file
+* Access each line of the file and determine measurements, keeping in mind smallest side of current package... Store the cumulative measurements
+* Output the total square footage
+*/
+
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <string>
 #include <vector>
 
 int main()
@@ -21,26 +30,87 @@ int main()
     using std::cout;
     using std::cin;
 
-    std::vector<char>;
-    std::string str;
-    int totalSquareFeetNeeded = 0;
-
     // Variables for calculating wrapping paper needed
     int valLength = 0;
     int valHeight = 0;
     int valWidth = 0;
     int smallestSide = 0;
+    int totalSquareFeetNeeded = 0; // Var for total square footage
 
     // Open file
-    std::ifstream giftFile("Gift List.txt");
-
-    // Read the data and store in vector
-    while (std::_Get_asan_aligned_after(giftFile, str))
-    {
-
-    }
+    std::string filename = "Gift List.txt"; // Variable for filename info
+    std::ifstream inputFile(filename);
     
-    // do calculations for each gift including determine smallest side area ... 2*l*w + 2*w*h + 2*h*l + (area of smallest side)
+    if (!inputFile.is_open()) // output error in case file cannot be opened...
+    {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return 1;
+    }
 
-    //store each square footage and calculate total square feet.
+    // Access each line of text and calculate the square footage needed
+    std::string line;
+    char lineDeliminator = 'x';
+
+    while (getline(inputFile, line))
+    {
+        //std::cout << line << std::endl; // ##### Test line for testing file and line access #####
+        
+        // Parse through the current line and separate each number, removing the x... then store in each of lenght, width, and height
+        std::vector<int> currentMeasurements;
+
+        std::stringstream myStringStream(line);
+        std::string temp;
+
+        while (std::getline(myStringStream, temp, lineDeliminator))
+        {
+            // Convert extracted substring to an int
+            currentMeasurements.push_back(std::stoi(temp));
+        }
+
+        /*
+        * Do calculations for each gift including determine smallest side area ... 2*l*w + 2*w*h + 2*h*l + (area of smallest side)
+        */
+
+        valLength = currentMeasurements[0];
+        valWidth = currentMeasurements[1];
+        valHeight = currentMeasurements[2];
+
+        // Calc side 1 (2*l*w)
+        int sideOne = (valLength * valWidth);
+
+        smallestSide = sideOne;
+        sideOne = 2 * sideOne;
+
+        // Calc side 2 (2*w*h)
+        int sideTwo = (valWidth * valHeight);
+        if (sideTwo < smallestSide)
+        {
+            smallestSide = sideTwo;
+        }
+
+        sideTwo = 2 * sideTwo;
+
+        // Calc side 3 (2*h*l)
+        int sideThree = (valHeight * valLength);
+        if (sideThree < smallestSide)
+        {
+            smallestSide = sideThree;
+        }
+
+        sideThree = 2 * sideThree;
+
+        /*
+        * Store each square footage and calculate total square feet.
+        */
+        // Calc total area
+        int boxArea = sideOne + sideTwo + sideThree + smallestSide;
+        totalSquareFeetNeeded += boxArea; // Add current box area to total area needed
+    }
+
+    cout << "Total square footage needed: " << totalSquareFeetNeeded << std::endl;
+
+    // Close the file
+    inputFile.close();
+
+    return 0;
 }
