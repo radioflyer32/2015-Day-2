@@ -36,6 +36,7 @@ int main()
     int valWidth = 0;
     int smallestSide = 0;
     int totalSquareFeetNeeded = 0; // Var for total square footage
+    int totalRibbon = 0;
 
     // Open file
     std::string filename = "Gift List.txt"; // Variable for filename info
@@ -75,6 +76,45 @@ int main()
         valWidth = currentMeasurements[1];
         valHeight = currentMeasurements[2];
 
+        // ###################### PART TWO CALCULATE RIBBON NEEDED ######################
+        int shortSide1;
+        int shortSide2;
+        int side3;
+        
+        //determine shortest sides
+        if (valLength <= valWidth)
+        {
+            shortSide1 = valLength;
+            if (valWidth <= valHeight)
+            {
+                shortSide2 = valWidth;
+                side3 = valHeight;
+            }
+            else
+            {
+                shortSide2 = valHeight;
+                side3 = valWidth;
+            }
+        }
+        else
+        {
+            shortSide1 = valWidth;
+            if (valLength <= valHeight)
+            {
+                shortSide2 = valLength;
+                side3 = valHeight;
+            }
+            else
+            {
+                shortSide2 = valHeight;
+                side3 = valLength;
+            }
+        }
+        // Ribbon length calculations...
+        int calculationA = (shortSide1 * 2) + (shortSide2 * 2);
+        int calculationB = (shortSide1 * shortSide2 * side3);
+        totalRibbon += (calculationA + calculationB);
+
         // Calc side 1 (2*l*w)
         int sideOne = (valLength * valWidth);
 
@@ -108,6 +148,7 @@ int main()
     }
 
     cout << "Total square footage needed: " << totalSquareFeetNeeded << std::endl;
+    cout << "Total ribbon: " << totalRibbon << std::endl;
 
     // Close the file
     inputFile.close();
